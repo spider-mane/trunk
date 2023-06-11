@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# ensure all intended scripts are executable
+
+ROOT=$(dirname $(dirname $(realpath "$0")))
+INCLUDES=$ROOT/src/inc
+DOMAINS="actions bin bundles entrypoints provisions setups"
+
+for domain in $DOMAINS; do
+  chmod -R +x "$INCLUDES/$domain"
+done

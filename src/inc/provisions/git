@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+
+### parse arguments ###
+
+eval set -- $(getopt -n $(basename "$0") -l user:,email:,default-branch:,install-gcm: -- "$0" "$@")
+
+while true; do
+  case "$1" in
+  --user)
+    GIT_USER="$2"
+    shift 2
+    ;;
+  --email)
+    GIT_EMAIL="$2"
+    shift 2
+    ;;
+  --default-branch)
+    GIT_DEFAULT_BRANCH="$2"
+    shift 2
+    ;;
+  --install-gcm)
+    INSTALL_GCM="$2"
+    shift 2
+    ;;
+  --)
+    shift
+    break
+    ;;
+  esac
+done
+
+GIT_USER=${GIT_USER:-$USER}
+GIT_DEFAULT_BRANCH=${GIT_DEFAULT_BRANCH:-master}
+
+INSTALL_GCM=${INSTALL_GCM:-false}
+
+### run provisions ###
+
+# install requirements
+apt-get update
+apt-get install -y gnupg ca-certificates curl
+
+# install complements
+apt-get install -y pass
+
+# install git
+curl -sS 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xe1dd270288b4e6030699e45fa1715d88e1df1f24' |
+  gpg --dearmor |
+  tee /usr/share/keyrings/git-core.gpg >/dev/null &&
+  echo "deb [signed-by=/usr/share/keyrings/git-core.gpg] https://ppa.launchpadcontent.net/git-core/ppa/ubuntu jammy main" \
+    >/etc/apt/sources.list.d/git-core.list &&
+  apt-get update &&
+  apt-get install -y git git-extras
+
+git config --global --add safe.directory "$APP"
+git config --global user.name "$GIT_USER"
+git config --global user.email "$GIT_EMAIL"
+git config --global git-extras.default-branch "$GIT_DEFAULT_BRANCH"
+
+# install delta
+DELTA_VERSION="0.15.1"
+curl --output-dir /tmp -LO https://github.com/dandavison/delta/releases/download/$DELTA_VERSION/git-delta_${DELTA_VERSION}_amd64.deb &&
+  dpkg -i /tmp/git-delta_${DELTA_VERSION}_amd64.deb
+
+git config --global core.pager delta
+git config --global interactive.diffFilter "delta --color-only"
+git config --global merge.conflictstyle diff3
+git config --global diff.colorMoved default
+git config --global delta.navigate true
+git config --global delta.features "side-by-side line-numbers decorations"
+
+# maybe install git credential manager
+if [ "$INSTALL_GCM" = true ]; then
+  # install requirements
+  apt-get install -y libicu-dev
+
+  GCM_VERSION="2.0.886"
+  curl --output-dir /tmp -LO https://github.com/GitCredentialManager/git-credential-manager/releases/download/v$GCM_VERSION/gcm-linux_amd64.$GCM_VERSION.deb &&
+    dpkg -i /tmp/gcm-linux_amd64.$GCM_VERSION.deb &&
+    git-credential-manager configure &&
+    gpg --quick-gen-key --no-tty --pinentry-mode loopback --passphrase '' "$GIT_USER" rsa4096 default never &&
+    pass init "$GIT_USER"
+
+  git config --global credential.credentialStore gpg
+fi

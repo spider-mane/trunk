@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+### parse arguments ###
+
+eval set -- $(getopt -n $(basename "$0") -l postgres-version: -- "$0" "$@")
+
+while true; do
+  case "$1" in
+  --postgres-version)
+    POSTGRES_VERSION="$2"
+    shift 2
+    ;;
+  --)
+    shift
+    break
+    ;;
+  esac
+done
+
+POSTGRES_VERSION=${POSTGRES_VERSION:-14}
+
+### run provisions ###
+
+# install requirements
+apt-get update
+apt-get install -y gnupg ca-certificates curl
+
+# install mysql
+apt-get install -y mysql-client
+
+# install sqlite
+apt-get install -y sqlite3
+
+# install postgresql
+curl -sS https://www.postgresql.org/media/keys/ACCC4CF8.asc |
+  gpg --dearmor |
+  tee /usr/share/keyrings/pgdg.gpg >/dev/null &&
+  echo "deb [signed-by=/usr/share/keyrings/pgdg.gpg] http://apt.postgresql.org/pub/repos/apt jammy-pgdg main" \
+    >/etc/apt/sources.list.d/pgdg.list &&
+  apt-get update &&
+  apt-get install -y postgresql-client-$POSTGRES_VERSION

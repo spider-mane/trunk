@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# install requirements
+apt-get update
+apt-get install -y git curl
+
+# install complements
+apt-get install -y ripgrep
+
+BAT_VERSION="0.22.1"
+curl --output-dir /tmp -LO https://github.com/sharkdp/bat/releases/download/v$BAT_VERSION/bat_${BAT_VERSION}_amd64.deb &&
+  dpkg -i /tmp/bat_${BAT_VERSION}_amd64.deb &&
+  git clone --depth=1 https://github.com/eth-p/bat-extras.git /opt/bat-extras &&
+  /opt/bat-extras/build.sh --install --minify=all

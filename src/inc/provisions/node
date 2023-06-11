@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+### parse arguments ###
+
+eval set -- $(getopt -n $(basename "$0") -l version: -- "$0" "$@")
+
+while true; do
+  case "$1" in
+  --version)
+    NODE_VERSION="$2"
+    shift 2
+    ;;
+  --)
+    shift
+    break
+    ;;
+  esac
+done
+
+NODE_VERSION=${NODE_VERSION:-18}
+
+### run provisions ###
+
+# install requirements
+apt-get update
+apt-get install -y curl
+
+# install complementary packages
+apt-get install -y python2 python3
+
+# install node
+curl -sLS https://deb.nodesource.com/setup_$NODE_VERSION.x | bash - &&
+  apt-get install -y nodejs &&
+  npm install -g npm
+
+# install yarn
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr/share/keyrings/yarn.gpg >/dev/null &&
+  echo "deb [signed-by=/usr/share/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian/ stable main" >/etc/apt/sources.list.d/yarn.list &&
+  apt-get update &&
+  apt-get install -y yarn

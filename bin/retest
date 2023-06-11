@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# reenter an existing test container
+
+docker container start -i trunktest.$1

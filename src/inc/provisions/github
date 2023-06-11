@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# install requirements
+apt-get update
+apt-get install -y gnupg ca-certificates curl
+
+# install github cli
+curl -sSL https://cli.github.com/packages/githubcli-archive-keyring.gpg |
+  gpg --dearmor |
+  tee /usr/share/keyrings/github-cli.gpg >/dev/null &&
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/github-cli.gpg] https://cli.github.com/packages stable main" \
+    >/etc/apt/sources.list.d/github-cli.list &&
+  apt update &&
+  apt install gh -y

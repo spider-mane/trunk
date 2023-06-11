@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+if [ -z "$(which unminimize)" ]; then
+  echo "Unmimimize operation only available in Ubuntu images that support it such as the official Docker Ubuntu image."
+  exit 1
+fi
+
+if [ "$1" = true ] || [ "$1" = "yes" ]; then
+  apt-get update && apt-get install -y apt-utils man && yes | unminimize
+fi

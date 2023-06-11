@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+ENTRYPOINT=${1:-basic}
+
+cd $(dirname $(realpath "$0"))
+
+cp ../entrypoints/$ENTRYPOINT /usr/local/bin/docker-entrypoint

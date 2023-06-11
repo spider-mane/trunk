@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# remove test images and containers
+
+IMAGE_QUERY=trunktest.*
+CONTAINER_QUERY=$IMAGE_QUERY
+
+docker image ls -aq --filter "reference=$IMAGE_QUERY" | xargs docker image rm -f
+docker container ls -aq --filter "name=$CONTAINER_QUERY" | xargs docker container rm -f

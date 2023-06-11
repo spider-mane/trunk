@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+
+### parse arguments ###
+
+eval set -- $(getopt -n $(basename "$0") -l version:,stack:,bundle:,debug: -- "$0" "$@")
+
+while true; do
+  case "$1" in
+  --version)
+    PHP_VERSION="$2"
+    shift 2
+    ;;
+  --stack)
+    PHP_STACK="$2"
+    shift 2
+    ;;
+  --bundle)
+    PHP_BUNDLE="$2"
+    shift 2
+    ;;
+  --debug)
+    PHP_DEBUG="$2"
+    shift 2
+    ;;
+  --)
+    shift
+    break
+    ;;
+  esac
+done
+
+# default to latest version of php if not specified
+PHP_VERSION="${PHP_VERSION:-8.2}"
+
+# if stack is specified remove commas
+if [ -n "$PHP_STACK" ]; then
+  PHP_STACK=${PHP_STACK//,/ }
+fi
+
+PHP_DEFAULT_STACK="cli dev curl mbstring xml zip bcmath readline"
+
+# add bundle to stack if specified
+if [ -n "$PHP_BUNDLE" ]; then
+  PHP_BUNDLE_BASIC="$PHP_DEFAULT_STACK"
+  PHP_BUNDLE_WEB="$PHP_BUNDLE_BASIC fpm mysql pgsql sqlite3 redis memcached intl msgpack igbinary imap ldap soap gd"
+
+  case "$PHP_BUNDLE" in
+  web)
+    PHP_STACK="$PHP_BUNDLE_WEB $PHP_STACK"
+    ;;
+  *)
+    PHP_STACK="$PHP_BUNDLE_BASIC $PHP_STACK"
+    ;;
+  esac
+fi
+
+# use default stack if neither bundle or stack options specified
+if [ -z "$PHP_STACK" ] && [ -z "$PHP_BUNDLE" ]; then
+  PHP_STACK="$PHP_DEFAULT_STACK"
+fi
+
+# add debugging extensions to stack if requested
+if [ "$PHP_DEBUG" = true ]; then
+  PHP_STACK="$PHP_STACK pcov xdebug"
+fi
+
+### run commands ###
+
+# install requirements
+apt-get update
+apt-get install -y gnupg ca-certificates curl libcap2-bin
+
+# install complementary packages
+PHP_COMPLEMENTS_BASIC="zip unzip"
+PHP_COMPLEMENTS_WEB="$PHP_COMPLEMENTS_BASIC libpng-dev librsvg2-bin dnsutils"
+
+case "$PHP_BUNDLE" in
+web)
+  PHP_COMPLEMENTS=$PHP_COMPLEMENTS_WEB
+  ;;
+*)
+  PHP_COMPLEMENTS=$PHP_COMPLEMENTS_BASIC
+  ;;
+esac
+
+apt-get install -y $PHP_COMPLEMENTS
+
+# cd for relative file navigation
+cd $(dirname $(realpath "$0"))
+
+# install php-get script
+cp ../bin/php-get /usr/local/bin
+
+# install extension repo
+curl -sS 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x14aa40ec0831756756d7f66c4f4ea0aae5267a6c' |
+  gpg --dearmor |
+  tee /usr/share/keyrings/ppa_ondrej_php.gpg >/dev/null &&
+  echo "deb [signed-by=/usr/share/keyrings/ppa_ondrej_php.gpg] https://ppa.launchpadcontent.net/ondrej/php/ubuntu jammy main" \
+    >/etc/apt/sources.list.d/ppa_ondrej_php.list &&
+  apt-get update
+
+# install php stack
+php-get install $PHP_VERSION $PHP_STACK
+
+# install composer
+php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
+
+# set capabilities
+setcap "cap_net_bind_service=+ep" /usr/bin/php$PHP_VERSION
+
+# copy configuration
+cp -r ../configurations/php/etc/* /etc/php/$PHP_VERSION
