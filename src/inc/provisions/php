@@ -2,7 +2,7 @@
 
 ### parse arguments ###
 
-eval set -- $(getopt -n $(basename "$0") -l version:,stack:,bundle:,debug: -- "$0" "$@")
+eval set -- $(getopt -n $(basename "$0") -l version:,stack:,bundle:,dev: -- "$0" "$@")
 
 while true; do
   case "$1" in
@@ -18,8 +18,8 @@ while true; do
     PHP_BUNDLE="$2"
     shift 2
     ;;
-  --debug)
-    PHP_DEBUG="$2"
+  --dev)
+    PHP_DEV="$2"
     shift 2
     ;;
   --)
@@ -37,7 +37,7 @@ if [ -n "$PHP_STACK" ]; then
   PHP_STACK=${PHP_STACK//,/ }
 fi
 
-PHP_DEFAULT_STACK="cli dev curl mbstring xml zip bcmath readline"
+PHP_DEFAULT_STACK="cli curl mbstring xml zip bcmath readline"
 
 # add bundle to stack if specified
 if [ -n "$PHP_BUNDLE" ]; then
@@ -60,8 +60,8 @@ if [ -z "$PHP_STACK" ] && [ -z "$PHP_BUNDLE" ]; then
 fi
 
 # add debugging extensions to stack if requested
-if [ "$PHP_DEBUG" = true ]; then
-  PHP_STACK="$PHP_STACK pcov xdebug"
+if [ "$PHP_DEV" = true ] || [ "$PHP_DEV" = "yes" ]; then
+  PHP_STACK="$PHP_STACK dev pcov xdebug"
 fi
 
 ### run commands ###
