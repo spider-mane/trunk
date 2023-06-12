@@ -22,6 +22,8 @@ if [ -z "$PHP_VERSION" ]; then
   exit 1
 fi
 
+### run provisions ###
+
 # install requirements
 apt-get update
 apt-get install -y gettext-base
@@ -34,4 +36,6 @@ cd $(dirname $(realpath "$0"))
 
 export PHP_VERSION
 
-envsubst <"../templates/supervisor/etc/supervisord.conf.template" >"/etc/supervisor/supervisord.conf"
+envsubst '$PHP_VERSION' < \
+  '../templates/supervisor/etc/supervisord.conf.template' > \
+  '/etc/supervisor/supervisord.conf'
