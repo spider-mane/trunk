@@ -15,7 +15,7 @@ SUT_CONTAINER=$SUT_IMAGE
 
 # exit if test does not exist
 if [ ! -f "$SUT_FILE" ]; then
-  echo "Test file \"$SUT_FILE\" for system \"$SUT\" does not exist."
+  echo "Test file \"$SUT_FILE\" for provision \"$SUT\" does not exist."
   exit 1
 fi
 

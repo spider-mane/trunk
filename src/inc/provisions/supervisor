@@ -1,8 +1,37 @@
 #!/usr/bin/env bash
 
+### parse arguments ###
+
+eval set -- $(getopt -n $(basename "$0") -l php-version: -- "$0" "$@")
+
+while true; do
+  case "$1" in
+  --php-version)
+    PHP_VERSION="$2"
+    shift 2
+    ;;
+  --)
+    shift
+    break
+    ;;
+  esac
+done
+
+if [ -z "$PHP_VERSION" ]; then
+  echo 'PHP version not specified, use "--php-version" flag or set "PHP_VERSION" environment variable.'
+  exit 1
+fi
+
+# install requirements
 apt-get update
+apt-get install -y gettext-base
+
+# install supervisor
 apt-get install -y supervisor
 
-# copy configuration
+# create configuration from template
 cd $(dirname $(realpath "$0"))
-cp -r ../configurations/supervisor/etc/. /etc/supervisor/
+
+export PHP_VERSION
+
+envsubst <"../templates/supervisor/etc/supervisord.conf.template" >"/etc/supervisor/supervisord.conf"
