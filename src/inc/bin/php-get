@@ -57,7 +57,7 @@ done
 
 # finally, run appropriate command
 if [ "$COMMAND" = 'install' ]; then
-  apt-get install -y $PACKAGES
+  apt-get update && apt-get install -y $PACKAGES
 elif [ "$COMMAND" = 'remove' ]; then
   apt-get remove -y $PACKAGES
 fi
