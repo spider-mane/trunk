@@ -6,5 +6,9 @@ if [ -z "$(which unminimize)" ]; then
 fi
 
 if [ "$1" = true ] || [ "$1" = "yes" ]; then
-  apt-get update && apt-get install -y apt-utils man && yes | unminimize
+  # install complementary packages
+  apt-get update && apt-get install -y apt-utils man
+
+  # unminimize
+  yes | unminimize
 fi
