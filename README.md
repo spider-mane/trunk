@@ -27,8 +27,12 @@ FROM ubuntu:22.04
 # Copy Trunk files into image
 COPY --from=spidermane/trunk * /trunk
 
+ENV DEBIAN_FRONTEND=noninteractive
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
 # Define "APP" environment variable that stores path to application
 ENV APP=/var/www/html
+
 WORKDIR "$APP"
 
 # Run desired provisioning scripts
@@ -36,16 +40,16 @@ ARG TZ="UTC"
 ENV TZ="$TZ"
 RUN /trunk/setups/timezone
 
-RUN /trunk/provisions/supervisor --php-version "8.1"
+RUN /trunk/actions/install mysql-client sqlite3
 
 ARG DEV=true
-RUN /trunk/provisions/php --version "8.1" --bundle "web" --stack "swoole,imagick" --dev "$DEV"
+RUN /trunk/provisions/php --version 8.1 --bundle web --stack swoole,imagick --dev "$DEV"
 
 # Select and set entrypoint
-RUN /trunk/setups/entrypoint "web"
+RUN /trunk/setups/entrypoint web
+RUN /trunk/provisions/supervisor --php-version 8.1 # Ensure any dependencies are provisioned
 ENTRYPOINT [ "docker-entrypoint" ]
 
-# Expose a port, as one does
 EXPOSE 9000
 
 # Remove temporary installation files including trunk directory copied previously
@@ -62,10 +66,8 @@ COPY --from=spidermane/trunk * /trunk
 # In this scenario, environment variables are used to create a configuration file
 ENV SERVER_NAME="localhost"
 ENV SERVER_PORT=80
-
 ENV APP_NAME="app"
 ENV APP_PORT=9000
-
 ENV WEB_ROOT=/var/www/html/public
 
 RUN /trunk/extras/nginx
@@ -82,14 +84,17 @@ FROM ubuntu:22.04
 
 COPY --from=spidermane/trunk * /trunk
 
+ENV DEBIAN_FRONTEND=noninteractive
+ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV APP=/app
+
 WORKDIR "$APP"
 
 ARG TZ="UTC"
 ENV TZ="$TZ"
 RUN /trunk/setups/timezone
 
-RUN /trunk/provisions/php --version "8.0" --dev "true"
+RUN /trunk/provisions/php --version 8.0 --dev true
 
 RUN /trunk/setups/entrypoint
 ENTRYPOINT [ "docker-entrypoint" ]

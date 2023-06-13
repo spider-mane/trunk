@@ -2,11 +2,11 @@
 
 ### parse arguments ###
 
-eval set -- $(getopt -n $(basename "$0") -l postgres-version: -- "$0" "$@")
+eval set -- $(getopt -n $(basename "$0") -l version: -- "$0" "$@")
 
 while true; do
   case "$1" in
-  --postgres-version)
+  --version)
     POSTGRES_VERSION="$2"
     shift 2
     ;;
@@ -25,13 +25,7 @@ POSTGRES_VERSION="${POSTGRES_VERSION:-14}"
 apt-get update
 apt-get install -y gnupg ca-certificates curl
 
-# install mysql
-apt-get install -y mysql-client
-
-# install sqlite
-apt-get install -y sqlite3
-
-# install postgresql
+# install postgres
 curl -sS "https://www.postgresql.org/media/keys/ACCC4CF8.asc" |
   gpg --dearmor |
   tee /usr/share/keyrings/pgdg.gpg >/dev/null &&
