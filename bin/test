@@ -2,28 +2,30 @@
 
 # create container to test provisioning scripts
 
-ROOT=$(dirname $(dirname $(realpath $BASH_SOURCE)))
-TESTS=$ROOT/tests
+BIN="$(dirname $(realpath "$0"))"
+ROOT="$(dirname "$BIN")"
+TESTS="${ROOT}/tests"
 
-TRUNK_PATH="$ROOT/src"
-TRUNK_IMAGE=trunktest.trunk
+TRUNK_PATH="${ROOT}/src"
+TRUNK_IMAGE="trunktest.trunk"
 
-SUT=$1
-SUT_FILE=$TESTS/${SUT//.//}.Dockerfile
-SUT_IMAGE=trunktest.$SUT
-SUT_CONTAINER=$SUT_IMAGE
+SUT="$1"
+SUT_PATH="${SUT//.//}"
+SUT_FILE="${TESTS}/${SUT_PATH}.Dockerfile"
+SUT_IMAGE="trunktest.${SUT}"
+SUT_CONTAINER="$SUT_IMAGE"
 
 # exit if test does not exist
 if [ ! -f "$SUT_FILE" ]; then
-  echo "Test file \"$SUT_FILE\" for provision \"$SUT\" does not exist."
+  echo "Test file \"${SUT_FILE}\" for provision \"${SUT}\" does not exist."
   exit 1
 fi
 
 # remove previously created images and container
-docker image rm -f $TRUNK_IMAGE $SUT_IMAGE
-docker container rm -f $SUT_CONTAINER
+docker image rm -f "$TRUNK_IMAGE" "$SUT_IMAGE"
+docker container rm -f "$SUT_CONTAINER"
 
 # create images and container
-docker image build --tag $TRUNK_IMAGE $TRUNK_PATH &&
-  docker image build --tag $SUT_IMAGE --file $SUT_FILE . &&
-  docker container run -it --name $SUT_CONTAINER $SUT_IMAGE bash
+docker image build --tag "$TRUNK_IMAGE" "$TRUNK_PATH" &&
+  docker image build --tag "$SUT_IMAGE" --file "$SUT_FILE" . &&
+  docker container run -it --name "$SUT_CONTAINER" "$SUT_IMAGE" bash

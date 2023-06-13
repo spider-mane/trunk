@@ -1,9 +1,9 @@
 FROM ubuntu:22.04
 
+COPY --from=trunktest.trunk * /trunk
+
 ENV DEBIAN_FRONTEND=noninteractive
 ENV APP=/app
-
-COPY --from=trunktest.trunk * /trunk
 
 RUN /trunk/provisions/git --user "Oatgrazer Porter" --email "ogporter@example.com" --default-branch masta --install-gcm true
 
