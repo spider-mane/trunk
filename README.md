@@ -29,26 +29,26 @@ COPY --from=spidermane/trunk * /trunk
 
 # Define "APP" environment variable that stores path to application
 ENV APP=/var/www/html
-WORKDIR $APP
+WORKDIR "$APP"
 
 # Run desired provisioning scripts
-ARG TZ=UTC
-ENV TZ=$TZ
+ARG TZ="UTC"
+ENV TZ="$TZ"
 RUN /trunk/setups/timezone
 
 RUN /trunk/provisions/supervisor --php-version "8.1"
 
 ARG DEV=true
-RUN /trunk/provisions/php --version "8.1" --bundle "web" --stack "swoole,imagick" --dev $DEV
+RUN /trunk/provisions/php --version "8.1" --bundle "web" --stack "swoole,imagick" --dev "$DEV"
 
 # Select and set entrypoint
-RUN /trunk/setups/entrypoint web
+RUN /trunk/setups/entrypoint "web"
 ENTRYPOINT [ "docker-entrypoint" ]
 
 # Expose a port, as one does
 EXPOSE 9000
 
-# Remove temporary installation files including trunk directory
+# Remove temporary installation files including trunk directory copied previously
 RUN /trunk/actions/cleanup
 ```
 
@@ -60,10 +60,12 @@ FROM nginx:latest
 COPY --from=spidermane/trunk * /trunk
 
 # In this scenario, environment variables are used to create a configuration file
-ENV SERVER_NAME=localhost
+ENV SERVER_NAME="localhost"
 ENV SERVER_PORT=80
-ENV APP_NAME=app
+
+ENV APP_NAME="app"
 ENV APP_PORT=9000
+
 ENV WEB_ROOT=/var/www/html/public
 
 RUN /trunk/extras/nginx
@@ -81,13 +83,13 @@ FROM ubuntu:22.04
 COPY --from=spidermane/trunk * /trunk
 
 ENV APP=/app
-WORKDIR $APP
+WORKDIR "$APP"
 
-ARG TZ=UTC
-ENV TZ=$TZ
+ARG TZ="UTC"
+ENV TZ="$TZ"
 RUN /trunk/setups/timezone
 
-RUN /trunk/provisions/php --version "8.0" --dev true
+RUN /trunk/provisions/php --version "8.0" --dev "true"
 
 RUN /trunk/setups/entrypoint
 ENTRYPOINT [ "docker-entrypoint" ]

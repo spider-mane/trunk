@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 # copy configuration
-cd $(dirname $(realpath "$0"))
-cp -r ../configurations/sh/home/. ../configurations/bash/home/. $HOME
+cd "$(dirname $(realpath "$0"))"
+cp -r ../configurations/sh/home/. ../configurations/bash/home/. "$HOME"

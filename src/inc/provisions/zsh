@@ -3,13 +3,13 @@
 apt-get update
 apt-get install -y curl git
 
-ZSH_CUSTOM=$HOME/.oh-my-zsh/custom
+ZSH_CUSTOM="${HOME}/.oh-my-zsh/custom"
 
 apt-get update && apt-get install -y zsh &&
-  bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&
-  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k &&
-  git clone --depth=1 https://github.com/zdharma-continuum/fast-syntax-highlighting.git $ZSH_CUSTOM/plugins/fast-syntax-highlighting
+  bash -c "$(curl -fsSL "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh")" &&
+  git clone --depth=1 "https://github.com/romkatv/powerlevel10k.git" "${ZSH_CUSTOM}/themes/powerlevel10k" &&
+  git clone --depth=1 "https://github.com/zdharma-continuum/fast-syntax-highlighting.git" "${ZSH_CUSTOM}/plugins/fast-syntax-highlighting"
 
 # copy configuration
-cd $(dirname $(realpath "$0"))
-cp -r ../configurations/sh/home/. ../configurations/zsh/home/. $HOME
+cd "$(dirname $(realpath "$0"))"
+cp -r ../configurations/sh/home/. ../configurations/zsh/home/. "$HOME"

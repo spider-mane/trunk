@@ -1,11 +1,11 @@
 plugman() {
   local FILE="README.md"
-  local PLUGIN="$ZSH/plugins/$1/$FILE"
-  local CUSTOM="$ZSH/custom/plugins/$1/$FILE"
+  local PLUGIN="${ZSH}/plugins/$1/${FILE}"
+  local CUSTOM="${ZSH}/custom/plugins/$1/${FILE}"
 
-  if [[ -f $CUSTOM ]]; then
+  if [[ -f "$CUSTOM" ]]; then
     bat "$CUSTOM"
-  elif [[ -f $PLUGIN ]]; then
+  elif [[ -f "$PLUGIN" ]]; then
     bat "$PLUGIN"
   else
     echo "Cannot find README for plugin \"$1\""

@@ -18,7 +18,7 @@ while true; do
 done
 
 if [ -z "$PHP_VERSION" ]; then
-  echo 'PHP version not specified, use "--php-version" flag or set "PHP_VERSION" environment variable.'
+  echo "PHP version not specified, use \"--php-version\" flag or set \"PHP_VERSION\" environment variable."
   exit 1
 fi
 
@@ -32,10 +32,10 @@ apt-get install -y gettext-base
 apt-get install -y supervisor
 
 # create configuration from template
-cd $(dirname $(realpath "$0"))
+cd "$(dirname $(realpath "$0"))"
 
 export PHP_VERSION
 
 envsubst '$PHP_VERSION' < \
-  '../templates/supervisor/etc/supervisord.conf.template' > \
-  '/etc/supervisor/supervisord.conf'
+  ../templates/supervisor/etc/supervisord.conf.template > \
+  /etc/supervisor/supervisord.conf

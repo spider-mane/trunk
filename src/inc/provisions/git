@@ -29,10 +29,10 @@ while true; do
   esac
 done
 
-GIT_USER=${GIT_USER:-$USER}
-GIT_DEFAULT_BRANCH=${GIT_DEFAULT_BRANCH:-master}
+GIT_USER="${GIT_USER:-$USER}"
+GIT_DEFAULT_BRANCH="${GIT_DEFAULT_BRANCH:-master}"
 
-INSTALL_GCM=${INSTALL_GCM:-false}
+INSTALL_GCM="${INSTALL_GCM:-false}"
 
 ### run provisions ###
 
@@ -41,7 +41,7 @@ apt-get update
 apt-get install -y gnupg ca-certificates curl
 
 # install git
-curl -sS 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xe1dd270288b4e6030699e45fa1715d88e1df1f24' |
+curl -sS "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xe1dd270288b4e6030699e45fa1715d88e1df1f24" |
   gpg --dearmor |
   tee /usr/share/keyrings/git-core.gpg >/dev/null &&
   echo "deb [signed-by=/usr/share/keyrings/git-core.gpg] https://ppa.launchpadcontent.net/git-core/ppa/ubuntu jammy main" \
@@ -56,27 +56,27 @@ git config --global git-extras.default-branch "$GIT_DEFAULT_BRANCH"
 
 # install delta
 DELTA_VERSION="0.15.1"
-curl --output-dir /tmp -LO https://github.com/dandavison/delta/releases/download/$DELTA_VERSION/git-delta_${DELTA_VERSION}_amd64.deb &&
-  dpkg -i /tmp/git-delta_${DELTA_VERSION}_amd64.deb
+curl --output-dir /tmp -LO "https://github.com/dandavison/delta/releases/download/${DELTA_VERSION}/git-delta_${DELTA_VERSION}_amd64.deb" &&
+  dpkg -i "/tmp/git-delta_${DELTA_VERSION}_amd64.deb"
 
-git config --global core.pager delta
+git config --global core.pager "delta"
 git config --global interactive.diffFilter "delta --color-only"
-git config --global merge.conflictstyle diff3
-git config --global diff.colorMoved default
+git config --global merge.conflictstyle "diff3"
+git config --global diff.colorMoved "default"
 git config --global delta.navigate true
 git config --global delta.features "side-by-side line-numbers decorations"
 
 # maybe install git credential manager
-if [ "$INSTALL_GCM" = true ]; then
+if [ "$INSTALL_GCM" = true ] || [ "$INSTALL_GCM" = "yes" ]; then
   # install requirements
   apt-get install -y libicu-dev pass
 
   GCM_VERSION="2.0.886"
-  curl --output-dir /tmp -LO https://github.com/GitCredentialManager/git-credential-manager/releases/download/v$GCM_VERSION/gcm-linux_amd64.$GCM_VERSION.deb &&
-    dpkg -i /tmp/gcm-linux_amd64.$GCM_VERSION.deb &&
+  curl --output-dir /tmp -LO "https://github.com/GitCredentialManager/git-credential-manager/releases/download/v${GCM_VERSION}/gcm-linux_amd64.${GCM_VERSION}.deb" &&
+    dpkg -i "/tmp/gcm-linux_amd64.${GCM_VERSION}.deb" &&
     git-credential-manager configure &&
-    gpg --quick-gen-key --no-tty --pinentry-mode loopback --passphrase '' "$GIT_USER" rsa4096 default never &&
+    gpg --quick-gen-key --no-tty --pinentry-mode loopback --passphrase "" "$GIT_USER" rsa4096 default never &&
     pass init "$GIT_USER"
 
-  git config --global credential.credentialStore gpg
+  git config --global credential.credentialStore "gpg"
 fi

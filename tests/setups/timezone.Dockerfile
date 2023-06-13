@@ -4,6 +4,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 COPY --from=trunktest.trunk * /trunk
 
-ENV TZ=America/New_York
+ENV TZ="America/New_York"
 
 RUN /trunk/setups/timezone

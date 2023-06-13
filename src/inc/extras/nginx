@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-cd $(dirname $(realpath $0))
+cd "$(dirname $(realpath $0))"
 
 cp -r ../templates/nginx/etc/. /etc/nginx/templates

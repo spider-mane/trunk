@@ -1,2 +1,1 @@
-# emulate sh -c "source ~/.profile"
-source ~/.profile
+emulate sh -c "source ~/.profile"

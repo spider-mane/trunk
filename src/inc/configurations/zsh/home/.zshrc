@@ -119,7 +119,7 @@ fi
 # For a full list of active aliases, run `alias`.
 
 if [ -f ~/.shellrc ]; then
-  emulate sh -c 'source ~/.shellrc'
+  emulate sh -c "source ~/.shellrc"
 fi
 
 if [ -f ~/.zsh_aliases ]; then
