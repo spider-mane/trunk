@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
+TRUNK_ROOT=$(dirname $(dirname $(realpath "$0")))
+
 apt-get -y autoremove &&
   apt-get clean &&
-  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* &&
-  rm -rf $(dirname $(realpath "$BASH_SOURCE")) # remove trunk directory
+  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* "$TRUNK_ROOT"
