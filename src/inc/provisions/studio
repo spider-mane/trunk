@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+### parse arguments ###
+
+eval set -- $(getopt -n $(basename "$0") -l path: -- "$0" "$@")
+
+while true; do
+  case "$1" in
+  --path)
+    STUDIO_PATH="$2"
+    shift 2
+    ;;
+  --)
+    shift
+    break
+    ;;
+  esac
+done
+
+STUDIO_PATH="${STUDIO_PATH:-/studio}"
+
+### run provisons ###
+
+if [ -z "$(which composer)" ]; then
+  echo "Provision PHP and Composer before provisioning Studio."
+  exit 1
+fi
+
+composer global config --no-plugins allow-plugins.franzl/studio true &&
+  composer global require franzl/studio &&
+  mkdir "$STUDIO_PATH"
