@@ -71,7 +71,7 @@ apt-get update
 apt-get install -y gnupg ca-certificates curl libcap2-bin
 
 # install complementary packages
-PHP_COMPLEMENTS_BASIC="zip unzip"
+PHP_COMPLEMENTS_BASIC="zip unzip git"
 PHP_COMPLEMENTS_WEB="${PHP_COMPLEMENTS_BASIC} libpng-dev librsvg2-bin dnsutils"
 
 case "$PHP_BUNDLE" in
