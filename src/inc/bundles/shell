@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+cd "$(dirname $(dirname $(realpath "$0")))"
+
+setups/bash && provisions/zsh && provisions/bat
