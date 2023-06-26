@@ -11,3 +11,4 @@ if [ ! "$(egrep -i "^${username}" /etc/passwd)" ]; then
 fi
 
 cp -r "${HOME}/." "/home/${username}"
+chown -R "${username}:${username}" "/home/${username}"
