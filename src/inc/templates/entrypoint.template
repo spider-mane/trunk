@@ -8,14 +8,14 @@ if [ -n "$HOST_GID" ]; then
   groupmod -g "$HOST_GID" admin
 fi
 
-if [ ! "$COMPOSER_ENTRYPOINT_SCRIPT" = false ] && [ ! -f "$APP/vendor/autoload.php" ]; then
-  composer -n -d "$APP" ${COMPOSER_ENTRYPOINT_SCRIPT:-install}
+if [ -d /entrypoint.d ]; then
+  for script in /entrypoint.d/*; do
+    source $script
+  done
 fi
 
-unset COMPOSER_ENTRYPOINT_SCRIPT
-
 if [ $# -gt 0 ]; then
-  exec gosu "$HOST_UID" "$@"
+  exec gosu admin "$@"
 else
   exec $ENTRYPOINT_COMMAND
 fi
