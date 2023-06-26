@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+username="admin"
+
+if [ ! "$(egrep -i "^${username}" /etc/passwd)" ]; then
+  useradd "$username"
+fi
+
+cp -r "${HOME}/." "/home/${username}"
