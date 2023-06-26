@@ -3,7 +3,11 @@
 username="admin"
 
 if [ ! "$(egrep -i "^${username}" /etc/passwd)" ]; then
-  useradd "$username"
+  gid=1337
+  uid=1337
+
+  groupadd --force -g "$gid" "$username"
+  useradd -m --no-user-group -g "$gid" -u "$uid" "$username"
 fi
 
 cp -r "${HOME}/." "/home/${username}"
