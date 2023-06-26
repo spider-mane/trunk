@@ -1,7 +1,32 @@
 #!/usr/bin/env bash
 
-ENTRYPOINT="${1:-basic}"
+usage="${1:-basic}"
 
-cd "$(dirname $(realpath "$0"))"
+# install packages
+apt-get update &&
+  # provisioning
+  apt-get install -y gettext-base &&
+  # runtime
+  apt-get install -y gosu
 
-cp ."./entrypoints/${ENTRYPOINT}" /usr/local/bin/docker-entrypoint
+# create entrypoint from template
+template="./templates/entrypoint.template"
+entrypoint="/usr/local/bin/docker-entrypoint"
+
+case "$usage" in
+web)
+  ENTRYPOINT_COMMAND="supervisord -c /etc/supervisor/supervisord.conf"
+  ;;
+*)
+  ENTRYPOINT_COMMAND="sleep infinity"
+  ;;
+esac
+
+cd "$(dirname $(dirname $(realpath "$0")))"
+
+export ENTRYPOINT_COMMAND &&
+  envsubst '$ENTRYPOINT_COMMAND' <"$template" >"$entrypoint" &&
+  unset ENTRYPOINT_COMMAND &&
+  chmod +x "$entrypoint"
+
+./setups/user
