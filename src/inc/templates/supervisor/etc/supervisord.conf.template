@@ -6,7 +6,7 @@ pidfile=/var/run/supervisord.pid
 
 [program:php-fpm]
 command=/usr/sbin/php-fpm$PHP_VERSION
-user=admin
+user=root
 environment=TRUNK_RUNTIME="1"
 stdout_logfile=/dev/stdout
 stdout_logfile_maxbytes=0
