@@ -2,4 +2,4 @@
 
 # copy configuration
 cd "$(dirname $(realpath "$0"))"
-cp -r ../configurations/sh/home/. ../configurations/bash/home/. "$HOME"
+cp -r ../configurations/shell/home/. ../configurations/bash/home/. "$HOME"

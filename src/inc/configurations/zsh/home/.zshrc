@@ -108,11 +108,6 @@ source $ZSH/oh-my-zsh.sh
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
-## directory ls colors
-if [ -x /usr/bin/dircolors ]; then
-  test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-fi
-
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
@@ -128,6 +123,12 @@ fi
 
 if [ -f ~/.zsh_functions ]; then
   source ~/.zsh_functions
+fi
+
+if [ -d ~/.zshrc.d ]; then
+  for script in ~/.zshrc.d/*; do
+    source $script
+  done
 fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.

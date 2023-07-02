@@ -1,0 +1,21 @@
+GPG_TTY=$(tty)
+
+export GPG_TTY
+
+if [ -x /usr/bin/dircolors ]; then
+  test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+fi
+
+if [ -f ~/.shell_aliases ]; then
+  source ~/.shell_aliases
+fi
+
+if [ -f ~/.shell_functions ]; then
+  source ~/.shell_functions
+fi
+
+if [ -d ~/.shellrc.d ]; then
+  for script in ~/.shellrc.d/*; do
+    source $script
+  done
+fi

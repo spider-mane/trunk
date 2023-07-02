@@ -12,4 +12,4 @@ apt-get update && apt-get install -y zsh &&
 
 # copy configuration
 cd "$(dirname $(realpath "$0"))"
-cp -r ../configurations/sh/home/. ../configurations/zsh/home/. "$HOME"
+cp -r ../configurations/shell/home/. ../configurations/zsh/home/. "$HOME"

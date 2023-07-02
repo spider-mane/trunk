@@ -5,7 +5,3 @@ mkcd() {
 push() {
   mkdir -p "$1" && touch "$1/$2"
 }
-
-how() {
-  "$@" --help 2>&1 | bathelp
-}
