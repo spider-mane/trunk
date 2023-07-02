@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+cd "$(dirname $(dirname $(realpath $0)))"
+
+cp bin/healthcheck /usr/local/bin/docker-healthcheck

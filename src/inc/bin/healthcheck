@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+if [ -d /healthcheck.d ]; then
+  for script in /healthcheck.d/*; do
+    source $script
+  done
+fi
+
+exit 0
