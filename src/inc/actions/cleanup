@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 
-TRUNK_ROOT=$(dirname $(dirname $(realpath "$0")))
+trunkroot=$(dirname $(dirname $(realpath "$0")))
+
+if [ -d "$trunkroot/cleanup.d" ]; then
+  for script in $trunkroot/cleanup.d/*; do
+    source $script
+  done
+fi
 
 apt-get -y autoremove &&
   apt-get clean &&
-  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* "$TRUNK_ROOT"
+  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* "$trunkroot"
