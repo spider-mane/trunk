@@ -8,7 +8,7 @@ ENV HOST_UID=8964
 ENV HOST_GID=1561
 
 RUN mkdir /entrypoint.d && \
-  echo "echo \"dummyscript loaded\"" > /entrypoint.d/dummyscript.sh
+  echo "echo \"entrypoint script loaded!\"" > /entrypoint.d/test.sh
 
 RUN /trunk/setups/entrypoint
 # RUN /trunk/setups/entrypoint web

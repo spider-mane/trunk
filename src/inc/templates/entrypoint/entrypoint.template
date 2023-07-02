@@ -1,13 +1,5 @@
 #!/usr/bin/env bash
 
-if [ -n "$HOST_UID" ]; then
-  usermod -u "$HOST_UID" admin
-fi
-
-if [ -n "$HOST_GID" ]; then
-  groupmod -g "$HOST_GID" admin
-fi
-
 if [ -d /entrypoint.d ]; then
   for script in /entrypoint.d/*; do
     source $script
@@ -15,7 +7,7 @@ if [ -d /entrypoint.d ]; then
 fi
 
 if [ $# -gt 0 ]; then
-  exec gosu admin "$@"
+  exec "$@"
 else
   exec $ENTRYPOINT_COMMAND
 fi
