@@ -26,6 +26,8 @@ if [ -z "$(which composer)" ]; then
   exit 1
 fi
 
+export COMPOSER_ALLOW_SUPERUSER=1
+
 composer global config --no-plugins allow-plugins.franzl/studio true &&
   composer global require franzl/studio &&
   mkdir "$STUDIO_PATH"
