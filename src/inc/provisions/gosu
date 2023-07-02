@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+GOSU_VERSION="1.16"
+dpkg_arch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"
+
+# install requirements
+apt-get update
+apt-get install -y gnupg ca-certificates wget
+
+# download files
+wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkg_arch"
+wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkg_arch.asc"
+
+# verify signiture
+GNUPGHOME="$(mktemp -d)"
+export GNUPGHOME
+gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4
+gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu
+gpgconf --kill all
+rm -rf "$GNUPGHOME" /usr/local/bin/gosu.asc
+
+# make executable
+chmod +x /usr/local/bin/gosu
+
+# verify success
+gosu --version
+gosu nobody true
