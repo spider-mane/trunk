@@ -110,3 +110,9 @@ setcap "cap_net_bind_service=+ep" "/usr/bin/php${PHP_VERSION}"
 
 # copy configuration
 cp -r ../configurations/php/etc/. "/etc/php/${PHP_VERSION}"
+
+# copy shell profile additions
+shellrcdotd="${HOME}/.shellrc.d"
+
+mkdir -p "$shellrcdotd" &&
+  cp ../scripts/shellrc.d/zz-composer.sh "$shellrcdotd"

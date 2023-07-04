@@ -2,8 +2,10 @@
 
 trunkroot=$(dirname $(dirname $(realpath "$0")))
 
-if [ -d "$trunkroot/cleanup.d" ]; then
-  for script in $trunkroot/cleanup.d/*; do
+cleanupdotd="$trunkroot/cleanup.d"
+
+if [ -d "$cleanupdotd" ]; then
+  for script in $cleanupdotd/*; do
     source $script
   done
 fi

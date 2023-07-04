@@ -25,22 +25,8 @@ if [ -d "${HOME}/info" ]; then
   INFOPATH="${HOME}/info:${INFOPATH}:"
 fi
 
-# Add application and vendor bins to PATH
-if [ -d "${APP}/bin" ]; then
-  PATH="${PATH}:${APP}/bin"
-fi
-
-if [ -d "${APP}/vendor/bin" ]; then
-  PATH="${PATH}:${APP}/vendor/bin"
-fi
-
-# Add global composer bin to PATH (not needed for zsh)
-if [ -z "${ZSH_VERSION}" ]; then
-  if [ -d "${HOME}/.composer/vendor/bin" ]; then
-    PATH="${PATH}:${HOME}/.composer/vendor/bin"
-  fi
-
-  if [ -d "${HOME}/.config/composer/vendor/bin" ]; then
-    PATH="${PATH}:${HOME}/.config/composer/vendor/bin"
-  fi
+if [ -d "${HOME}/.profile.d" ]; then
+  for script in "${HOME}/.profile.d"/*; do
+    source $script
+  done
 fi

@@ -20,5 +20,5 @@ cd "$trunkroot"
 
 rcpath="${HOME}/.shellrc.d"
 
-mkdir "$rcpath" &&
-  cp scripts/shellrc.d/bat.sh "$rcpath"
+mkdir -p "$rcpath" &&
+  cp scripts/shellrc.d/20-bat.sh "$rcpath"
