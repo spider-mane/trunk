@@ -1,0 +1,17 @@
+user="$TRUNK_USER"
+
+gid="$(id -g $user)"
+uid="$(id -u $user)"
+
+shopt -s dotglob globstar
+
+for file in /home/$user/*; do
+  fuid="$(stat --format '%u' $file)"
+  fgid="$(stat --format '%g' $file)"
+
+  if [ -e "/root/$(basename $file)" ] && [ "$uid:$gid" != "$fuid:$fgid" ]; then
+    exit 1
+  fi
+done
+
+shopt -u dotglob globstar

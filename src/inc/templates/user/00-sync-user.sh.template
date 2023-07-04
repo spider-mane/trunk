@@ -1,0 +1,20 @@
+HOST_GID="${HOST_GID:-1000}"
+HOST_UID="${HOST_UID:-1000}"
+
+user="$TRUNK_USER"
+user_uid="$(id -u $user)"
+user_gid="$(id -g $user)"
+
+if [ "$HOST_UID:$HOST_GID" != "$user_uid:$user_gid" ]; then
+  if [ "$HOST_GID" != "$user_gid" ]; then
+    groupmod -g "$HOST_GID" "${user}"
+  fi
+
+  usermod -u "$HOST_UID" "$user"
+  chown -R "${user}:${user}" "/home/${user}"
+fi
+
+# set container command to be run as user
+if [ $# -gt 0 ]; then
+  set -- gosu "$user" "$@"
+fi

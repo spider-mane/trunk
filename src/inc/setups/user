@@ -1,14 +1,39 @@
 #!/usr/bin/env bash
 
-username="admin"
-
-if [ ! "$(egrep -i "^${username}" /etc/passwd)" ]; then
-  gid=1337
-  uid=1337
-
-  groupadd --force -g "$gid" "$username"
-  useradd -m --no-user-group -g "$gid" -u "$uid" "$username"
+if [ -n "$(getent group trunkuser)" ]; then
+  echo "trunk user already created in previous layer."
+  exit 1
 fi
 
-cp -r "${HOME}/." "/home/${username}"
-chown -R "${username}:${username}" "/home/${username}"
+# install packages
+apt-get update &&
+  # provisioning
+  apt-get install -y gettext-base &&
+  # runtime
+  apt-get install -y gosu
+
+# create user and group
+gid=1337
+uid=1337
+
+groupadd --force -g 6174 trunkuser
+groupadd --force -g "$gid" "$TRUNK_USER"
+useradd -m -s /bin/bash --no-user-group -g "$gid" -G trunkuser -u "$uid" "$TRUNK_USER"
+
+cd "$(dirname $(dirname $(realpath $0)))"
+
+# create entrypoint script from template
+entrypoint="00-sync-user.sh"
+template="templates/user/${entrypoint}.template"
+file="/entrypoint.d/${entrypoint}"
+
+mkdir -p /entrypoint.d &&
+  envsubst '$TRUNK_USER' <"$template" >"$file"
+
+# create healthcheck script from template
+healthcheck="99-user-synced.sh"
+template="templates/user/${healthcheck}.template"
+file="/healthcheck.d/${healthcheck}"
+
+mkdir -p /healthcheck.d &&
+  envsubst '$TRUNK_USER' <"$template" >"$file"
