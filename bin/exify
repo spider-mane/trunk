@@ -2,10 +2,10 @@
 
 # ensure all intended scripts are executable
 
-ROOT=$(dirname $(dirname $(realpath "$0")))
-INCLUDES=$ROOT/src/inc
-DOMAINS="actions bin bundles entrypoints extras provisions setups"
+root="$(dirname $(dirname $(realpath "$0")))"
+includes="${root}/src/inc"
+domains="actions bin bundles extras provisions setups"
 
-for domain in $DOMAINS; do
-  chmod -R +x "$INCLUDES/$domain"
+for domain in $domains; do
+  chmod -R +x "${includes}/${domain}"
 done

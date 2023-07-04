@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# publish image to docker hub
+
+root="$(dirname $(dirname $(realpath "$0")))"
+src="${root}/src"
+image="spidermane/trunk"
+tag="$1"
+
+docker image build -t "$image" "$src" &&
+  docker image push "$image" &&
+  docker image rm "$image"
