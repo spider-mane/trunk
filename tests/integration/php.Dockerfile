@@ -6,11 +6,14 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # INTEGRATIONS
 
+ENV TRUNK_USER=tuser
+
 RUN /trunk/bundles/shell
 
 # SUT
 
-RUN /trunk/provisions/php
+# RUN /trunk/provisions/php
+RUN /trunk/provisions/php --stack fpm
 
 # FIXTURES
 
@@ -31,3 +34,9 @@ RUN composer_bin="$(composer global config bin-dir --absolute 2>/dev/null)" && \
   script="${composer_bin}/globalcomposerscript" && \
   echo "echo \"global composer script loaded!\"" > "$script" && \
   chmod +x "$script"
+
+# CLEANUP
+
+RUN /trunk/actions/cleanup
+
+# alias cleanup="cp -r /trunk /trunk2 && /trunk/actions/cleanup && mv /trunk2 /trunk"

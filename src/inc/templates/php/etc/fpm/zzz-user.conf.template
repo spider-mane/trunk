@@ -1,0 +1,3 @@
+[www]
+user=$TRUNK_USER
+group=$TRUNK_USER

@@ -68,7 +68,7 @@ fi
 
 # install requirements
 apt-get update
-apt-get install -y gnupg ca-certificates curl libcap2-bin
+apt-get install -y gnupg ca-certificates curl libcap2-bin gettext-base
 
 # install complementary packages
 PHP_COMPLEMENTS_BASIC="zip unzip git"
@@ -116,3 +116,8 @@ shellrcdotd="${HOME}/.shellrc.d"
 
 mkdir -p "$shellrcdotd" &&
   cp ../scripts/shellrc.d/99-composer.sh "$shellrcdotd"
+
+# copy cleanup script
+if [ -n "$(which "php-fpm${PHP_VERSION}")" ]; then
+  cp ../scripts/cleanup.d/20-configure-php-fpm-user.sh ../cleanup.d
+fi
